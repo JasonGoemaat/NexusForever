@@ -39,6 +39,7 @@ using NexusForever.Network.World.Social;
 using NexusForever.Script;
 using NexusForever.Shared;
 using NexusForever.Shared.Configuration;
+using NexusForever.WorldServer.Api;
 using NexusForever.WorldServer.Command;
 using NexusForever.WorldServer.Network;
 using NexusForever.WorldServer.Network.Message.Handler.Character;
@@ -170,6 +171,9 @@ namespace NexusForever.WorldServer
                 scriptManager.Update(lastTick);
 
                 ShutdownManager.Instance.Update(lastTick);
+
+                // process api
+                ApiManager.Instance.Update(lastTick);
 
                 // process commands after everything else in the tick has processed
                 CommandManager.Instance.Update(lastTick);

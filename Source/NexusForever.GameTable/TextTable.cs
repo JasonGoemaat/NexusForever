@@ -10,7 +10,7 @@ namespace NexusForever.GameTable
         public TextTableEntry[] Entries { get; private set; }
 
         private readonly TextTableHeader header;
-        private int[] lookup;
+        public int[] lookup;
 
         [JsonConstructor]
         public TextTable(IEnumerable<TextTableEntry> entries)

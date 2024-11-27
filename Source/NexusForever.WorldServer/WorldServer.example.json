@@ -1,4 +1,8 @@
 {
+    "Api": {
+        "Host": "0.0.0.0",
+        "Port": 5003
+    },
     "Network": {
         "Host": "0.0.0.0",
         "Port": 24000
@@ -39,7 +43,7 @@
             ],
             "SynchronousUpdate": false,
             "GridActionThreshold": 100,
-            "GridActionMaxRetry": 5, 
+            "GridActionMaxRetry": 5,
             "GridUnloadTimer": 3600,
             "MaxInstances": 10
         },

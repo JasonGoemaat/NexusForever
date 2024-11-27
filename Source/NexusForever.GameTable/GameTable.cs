@@ -14,7 +14,7 @@ namespace NexusForever.GameTable
         public T[] Entries { get; private set; }
 
         private GameTableHeader header;
-        private int[] lookup;
+        public int[] lookup;
 
         private static readonly Dictionary<FieldInfo, GameTableFieldArrayAttribute> attributeCache;
         private static readonly int headerSize;

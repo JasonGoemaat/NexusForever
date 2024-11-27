@@ -378,6 +378,11 @@ namespace NexusForever.Game.Entity
             if (!IsAlive || !attacker.IsAlive)
                 return;
 
+            if (this is Player)
+                return;
+            damageDescription.AdjustedDamage *= 20;
+
+
             // TODO: Calculate Threat properly
             ThreatManager.UpdateThreat(attacker, (int)damageDescription.RawDamage);
 

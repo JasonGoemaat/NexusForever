@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Systemd;
 using Microsoft.Extensions.Hosting.WindowsServices;
+using Microsoft.Extensions.Logging;
 using NexusForever.Database;
 using NexusForever.Game;
 using NexusForever.Game.Configuration.Model;
@@ -17,6 +18,7 @@ using NexusForever.Script;
 using NexusForever.Script.Configuration.Model;
 using NexusForever.Shared;
 using NexusForever.Shared.Configuration;
+using NexusForever.WorldServer.Api;
 using NexusForever.WorldServer.Network;
 using NLog;
 using NLog.Extensions.Logging;
@@ -42,7 +44,8 @@ namespace NexusForever.WorldServer
             IHostBuilder builder = new HostBuilder()
                 .ConfigureLogging(lb =>
                 {
-                    lb.AddNLog();
+                    lb.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information).AddNLog().SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Information);
+                    //lb.AddNLog();
                 })
                 .ConfigureAppConfiguration(cb =>
                 {
@@ -53,6 +56,8 @@ namespace NexusForever.WorldServer
                     // register world server service first since it needs to execute before the web host
                     sc.AddHostedService<HostedService>();
 
+                    sc.AddOptions<ApiConfig>()
+                        .Bind(hb.Configuration.GetSection("Api"));
                     sc.AddOptions<NetworkConfig>()
                         .Bind(hb.Configuration.GetSection("Network"));
                     sc.AddOptions<RealmConfig>()
@@ -71,6 +76,7 @@ namespace NexusForever.WorldServer
                 })
                 .ConfigureWebHostDefaults(wb =>
                 {
+                    // NexusForever.WorldServer.Api.WorldServerApi.Build(wb);
                     WorldServerEmbeddedWebServer.Build(wb);
                 })
                 .UseWindowsService()
@@ -82,7 +88,11 @@ namespace NexusForever.WorldServer
             try
             {
                 var host = builder.Build();
-                await host.RunAsync(cancellationToken.Token);
+
+                var app = WorldServerApi.CreateApp(host.Services);
+                var task1 = host.RunAsync(cancellationToken.Token);
+                var task2 = app.RunAsync(cancellationToken.Token);
+                await Task.WhenAll(task1, task2);
             }
             catch (Exception e)
             {
